@@ -3,7 +3,7 @@
   "name": "Atmo",
   "bluetooth": [
     {
-      "local_name": "ATMO",
+      "local_name": "ATMOTUBE",
       "manufacturer_id": 65535,
       "service_uuid": "db450001-8e9a-4818-add7-6ed94a328ab4",
       "connectable": true

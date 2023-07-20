@@ -82,7 +82,7 @@ def test_data() -> None:
         "humidity": 28,
         "pressure": 841.7,
         "device_id": "CC:61:37:BB:02:02",
-        "company_name": "ATMO",
+        "company_name": "ATMOTUBE",
     }
     assert None in data.values()
 

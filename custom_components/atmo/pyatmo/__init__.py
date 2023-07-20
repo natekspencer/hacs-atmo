@@ -416,7 +416,7 @@ class AtmoBluetoothDeviceData(BluetoothData, AtmoDataMixin):
                 "humidity": self.humidity,
                 "pressure": self.pressure / 100,
                 "device_id": address,
-                "company_name": "ATMO",
+                "company_name": "ATMOTUBE",
             }
             _LOGGER.debug(
                 "%s: Updating PlanetWatch sensor: %s", address, json.dumps(data)
