@@ -1,0 +1,11 @@
+# Limited configuration instead of default_config
+# https://www.home-assistant.io/integrations/default_config
+automation:
+frontend:
+history:
+logbook:
+
+logger:
+  default: info
+  logs:
+    custom_components.atmotube: debug

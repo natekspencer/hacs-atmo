@@ -1,0 +1,7 @@
+{
+  "name": "Atmotube",
+  "render_readme": true,
+  "domains": ["binary_sensor", "sensor"],
+  "iot_class": "Local Push",
+  "homeassistant": "2023.6.0"
+}
