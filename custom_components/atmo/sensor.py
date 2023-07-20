@@ -1,4 +1,4 @@
-"""Support for Atmotube sensors."""
+"""Support for Atmo sensors."""
 from __future__ import annotations
 
 from sensor_state_data import DeviceClass, SensorUpdate, Units
@@ -31,7 +31,7 @@ from homeassistant.helpers.sensor import sensor_device_info_to_hass_device_info
 
 from .const import DOMAIN
 from .device import device_key_to_bluetooth_entity_key
-from .pyatmotube import ERROR
+from .pyatmo import ERROR
 
 SENSOR_DESCRIPTIONS = {
     (
@@ -158,26 +158,26 @@ async def async_setup_entry(
     entry: config_entries.ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Atmotube BLE sensors."""
+    """Set up the Atmo BLE sensors."""
     coordinator: PassiveBluetoothProcessorCoordinator = hass.data[DOMAIN][
         entry.entry_id
     ]
     processor = PassiveBluetoothDataProcessor(sensor_update_to_bluetooth_data_update)
     entry.async_on_unload(
         processor.async_add_entities_listener(
-            AtmotubeBluetoothSensorEntity, async_add_entities
+            AtmoBluetoothSensorEntity, async_add_entities
         )
     )
     entry.async_on_unload(coordinator.async_register_processor(processor))
 
 
-class AtmotubeBluetoothSensorEntity(
+class AtmoBluetoothSensorEntity(
     PassiveBluetoothProcessorEntity[
         PassiveBluetoothDataProcessor[float | int | str | None]
     ],
     SensorEntity,
 ):
-    """Representation of a Atmotube sensor."""
+    """Representation of a Atmo sensor."""
 
     @property
     def available(self) -> bool:

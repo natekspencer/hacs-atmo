@@ -1,4 +1,4 @@
-"""The Atmotube integration."""
+"""The Atmo integration."""
 from __future__ import annotations
 
 import logging
@@ -18,7 +18,7 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 
 from .const import CONF_PLANETWATCH, CONF_POLLING, DOMAIN
-from .pyatmotube import AtmotubeBluetoothDeviceData
+from .pyatmo import AtmoBluetoothDeviceData
 
 PLATFORMS: list[Platform] = [Platform.BINARY_SENSOR, Platform.SENSOR]
 
@@ -26,10 +26,10 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up Atmotube device from a config entry."""
+    """Set up Atmo device from a config entry."""
     address = entry.unique_id
     assert address is not None
-    data = AtmotubeBluetoothDeviceData(hass)
+    data = AtmoBluetoothDeviceData(hass)
 
     polling_enabled = entry.options.get(CONF_POLLING, False)
     if entry.options.get(CONF_PLANETWATCH, False):

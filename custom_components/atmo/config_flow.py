@@ -1,4 +1,4 @@
-"""Config flow for Atmotube integration."""
+"""Config flow for Atmo integration."""
 from __future__ import annotations
 
 from typing import Any
@@ -19,7 +19,7 @@ from homeassistant.helpers.schema_config_entry_flow import (
 )
 
 from .const import CONF_PLANETWATCH, CONF_POLLING, DOMAIN
-from .pyatmotube import AtmotubeBluetoothDeviceData as DeviceData
+from .pyatmo import AtmoBluetoothDeviceData as DeviceData
 
 OPTIONS_SCHEMA = vol.Schema(
     {
@@ -30,8 +30,8 @@ OPTIONS_SCHEMA = vol.Schema(
 OPTIONS_FLOW = {"init": SchemaFlowFormStep(OPTIONS_SCHEMA)}
 
 
-class AtmotubeConfigFlow(ConfigFlow, domain=DOMAIN):
-    """Handle a config flow for Atmotube."""
+class AtmoConfigFlow(ConfigFlow, domain=DOMAIN):
+    """Handle a config flow for Atmo."""
 
     VERSION = 1
 

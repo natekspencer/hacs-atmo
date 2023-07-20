@@ -1,4 +1,4 @@
-"""Atmobtube module."""
+"""Atmo module."""
 from __future__ import annotations
 
 import asyncio
@@ -46,13 +46,13 @@ VOLATILE_ORGANIC_COMPOUNDS__CONCENTRATION_PARTS_PER_BILLION = BaseSensorDescript
     native_unit_of_measurement=Units.CONCENTRATION_PARTS_PER_BILLION,
 )
 
-ATMOTUBE_MANUFACTURER_ID = 0xFFFF
+ATMO_MANUFACTURER_ID = 0xFFFF
 PLANETWATCH_CHECK_RATE_LIMIT = timedelta(minutes=5)
 PLANETWATCH_UPDATE_RATE_LIMIT = timedelta(seconds=20)
 
 
-class AtmotubeDataMixin:
-    """Atmotube data mixin."""
+class AtmoDataMixin:
+    """Atmo data mixin."""
 
     battery: int | None = None
     bonded: bool = False
@@ -74,8 +74,8 @@ class AtmotubeDataMixin:
     planetwatch_updated: datetime | None = None
 
 
-class AtmotubeBluetoothDeviceData(BluetoothData, AtmotubeDataMixin):
-    """Data for Atmotube BLE sensors."""
+class AtmoBluetoothDeviceData(BluetoothData, AtmoDataMixin):
+    """Data for Atmo BLE sensors."""
 
     def __init__(self, hass: HomeAssistant | None = None) -> None:
         """Initialize the class."""
@@ -90,7 +90,7 @@ class AtmotubeBluetoothDeviceData(BluetoothData, AtmotubeDataMixin):
     def _start_update(self, data: BluetoothServiceInfo) -> None:
         """Update from BLE advertisement data."""
         address = data.address
-        _LOGGER.debug("%s: Parsing Atmotube BLE advertisement data", address)
+        _LOGGER.debug("%s: Parsing Atmo BLE advertisement data", address)
         manufacturer_data = data.manufacturer_data
         service_uuids = data.service_uuids
         local_name = data.name
@@ -115,12 +115,12 @@ class AtmotubeBluetoothDeviceData(BluetoothData, AtmotubeDataMixin):
         data: bytes,
         service_uuids: list[str],
     ) -> None:
-        """Parser for Atmotube sensors."""
-        if mfr_id != ATMOTUBE_MANUFACTURER_ID:
+        """Parser for Atmo sensors."""
+        if mfr_id != ATMO_MANUFACTURER_ID:
             return
 
-        _LOGGER.debug("%s: Parsing Atmotube sensor: %s %s", address, mfr_id, data.hex())
-        self.set_device_manufacturer("Atmotube")
+        _LOGGER.debug("%s: Parsing Atmo sensor: %s %s", address, mfr_id, data.hex())
+        self.set_device_manufacturer("Atmo")
         self.set_device_type("Atmotube PRO")
         self.set_device_name(f"Atmotube PRO {address}")
         msg_length = len(data)
@@ -416,14 +416,14 @@ class AtmotubeBluetoothDeviceData(BluetoothData, AtmotubeDataMixin):
                 "humidity": self.humidity,
                 "pressure": self.pressure / 100,
                 "device_id": address,
-                "company_name": "ATMOTUBE",
+                "company_name": "ATMO",
             }
             _LOGGER.debug(
                 "%s: Updating PlanetWatch sensor: %s", address, json.dumps(data)
             )
             if None in data.values():
                 return  # not ready to update
-            url = "https://sensorsws.planetwatch.io/atmotube/v1"
+            url = "https://sensorsws.planetwatch.io/atmo/v1"
             try:
                 async with self.client.post(url, json=data) as resp:
                     _LOGGER.debug("%s: %s %s", address, resp.status, await resp.text())

@@ -1,10 +1,10 @@
-"""pyatmotube tests."""
+"""pyatmo tests."""
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
 from struct import unpack
 
-from custom_components.atmotube.pyatmotube.helpers import (
+from custom_components.atmo.pyatmo.helpers import (
     PM1_LEVELS,
     PM10_LEVELS,
     PM25_LEVELS,
@@ -82,7 +82,7 @@ def test_data() -> None:
         "humidity": 28,
         "pressure": 841.7,
         "device_id": "CC:61:37:BB:02:02",
-        "company_name": "ATMOTUBE",
+        "company_name": "ATMO",
     }
     assert None in data.values()
 

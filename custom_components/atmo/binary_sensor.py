@@ -1,4 +1,4 @@
-"""Support for Atmotube binary sensors."""
+"""Support for Atmo binary sensors."""
 from __future__ import annotations
 
 from sensor_state_data import BinarySensorDeviceClass as DeviceClass, SensorUpdate
@@ -21,7 +21,7 @@ from homeassistant.helpers.sensor import sensor_device_info_to_hass_device_info
 
 from .const import DOMAIN
 from .device import device_key_to_bluetooth_entity_key
-from .pyatmotube import ERROR, SensorUpdate
+from .pyatmo import ERROR, SensorUpdate
 
 BINARY_SENSOR_DESCRIPTIONS = {
     DeviceClass.BATTERY_CHARGING: BinarySensorEntityDescription(
@@ -63,24 +63,24 @@ async def async_setup_entry(
     entry: config_entries.ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Atmotube BLE sensors."""
+    """Set up the Atmo BLE sensors."""
     coordinator: PassiveBluetoothProcessorCoordinator = hass.data[DOMAIN][
         entry.entry_id
     ]
     processor = PassiveBluetoothDataProcessor(sensor_update_to_bluetooth_data_update)
     entry.async_on_unload(
         processor.async_add_entities_listener(
-            AtmotubeBluetoothBinarySensorEntity, async_add_entities
+            AtmoBluetoothBinarySensorEntity, async_add_entities
         )
     )
     entry.async_on_unload(coordinator.async_register_processor(processor))
 
 
-class AtmotubeBluetoothBinarySensorEntity(
+class AtmoBluetoothBinarySensorEntity(
     PassiveBluetoothProcessorEntity[PassiveBluetoothDataProcessor[bool | None]],
     BinarySensorEntity,
 ):
-    """Representation of an Atmotube binary sensor."""
+    """Representation of an Atmo binary sensor."""
 
     @property
     def available(self) -> bool:
