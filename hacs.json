@@ -1,7 +1,9 @@
 {
   "name": "Atmo",
-  "render_readme": true,
   "domains": ["binary_sensor", "sensor"],
+  "homeassistant": "2023.6.0",
   "iot_class": "Local Push",
-  "homeassistant": "2023.6.0"
+  "render_readme": true,
+  "zip_release": true,
+  "filename": "atmo.zip"
 }
