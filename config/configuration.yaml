@@ -1,6 +1,7 @@
 # Limited configuration instead of default_config
 # https://www.home-assistant.io/integrations/default_config
 automation:
+bluetooth:
 frontend:
 history:
 logbook:
@@ -8,4 +9,4 @@ logbook:
 logger:
   default: info
   logs:
-    custom_components.atmotube: debug
+    custom_components.atmo: debug
