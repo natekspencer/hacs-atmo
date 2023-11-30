@@ -17,5 +17,5 @@
   "iot_class": "local_push",
   "issue_tracker": "https://github.com/natekspencer/hacs-atmo/issues",
   "loggers": ["custom_components.atmo"],
-  "version": "0.1.1"
+  "version": "0.0.0"
 }
