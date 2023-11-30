@@ -36,6 +36,10 @@ CHARACTERISTIC_BME280 = "db450003-8e9a-4818-add7-6ed94a328ab4"
 CHARACTERISTIC_STATUS = "db450004-8e9a-4818-add7-6ed94a328ab4"
 CHARACTERISTIC_PM = "db450005-8e9a-4818-add7-6ed94a328ab4"
 
+BASE_DATA_LENGTH = 12
+PM_DATA_LENGTH = 9
+COMBINED_DATA_LENGTH = 21
+
 
 PRESSURE__PA = BaseSensorDescription(
     device_class=SensorDeviceClass.PRESSURE,
@@ -125,7 +129,7 @@ class AtmoBluetoothDeviceData(BluetoothData, AtmoDataMixin):
         self.set_device_name(f"Atmotube PRO {address}")
         msg_length = len(data)
 
-        if msg_length == 12:
+        if msg_length in (BASE_DATA_LENGTH, COMBINED_DATA_LENGTH):
             # unpack(">h2sbbibb", data)
             self.voc = int.from_bytes(data[:2], byteorder="big")
             device_id = data[2:4].hex()
@@ -183,9 +187,13 @@ class AtmoBluetoothDeviceData(BluetoothData, AtmoDataMixin):
                 name="Battery charging",
             )
 
-            return
+            if msg_length == BASE_DATA_LENGTH:
+                return
 
-        if msg_length == 9:
+            data = data[BASE_DATA_LENGTH:]
+            msg_length -= BASE_DATA_LENGTH
+
+        if msg_length == PM_DATA_LENGTH:
             pm1, pm25, pm10 = decode_pms(data, 3, 2)
             firmware = data[6:9].hex().upper()
             self.set_device_sw_version(firmware)
