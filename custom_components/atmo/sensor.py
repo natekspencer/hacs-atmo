@@ -1,4 +1,5 @@
 """Support for Atmo sensors."""
+
 from __future__ import annotations
 
 from sensor_state_data import DeviceClass, SensorUpdate, Units
@@ -173,9 +174,7 @@ async def async_setup_entry(
 
 
 class AtmoBluetoothSensorEntity(
-    PassiveBluetoothProcessorEntity[
-        PassiveBluetoothDataProcessor[float | int | str | None]
-    ],
+    PassiveBluetoothProcessorEntity[PassiveBluetoothDataProcessor],
     SensorEntity,
 ):
     """Representation of a Atmo sensor."""
