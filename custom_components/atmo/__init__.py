@@ -1,4 +1,5 @@
 """The Atmo integration."""
+
 from __future__ import annotations
 
 import logging
@@ -56,16 +57,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             )
         return await data.async_poll(connectable_device)
 
-    coordinator = hass.data.setdefault(DOMAIN, {})[
-        entry.entry_id
-    ] = ActiveBluetoothProcessorCoordinator(
-        hass,
-        _LOGGER,
-        address=address,
-        mode=BluetoothScanningMode.PASSIVE,
-        update_method=data.update,
-        needs_poll_method=needs_poll_method,
-        poll_method=poll_method,
+    coordinator = hass.data.setdefault(DOMAIN, {})[entry.entry_id] = (
+        ActiveBluetoothProcessorCoordinator(
+            hass,
+            _LOGGER,
+            address=address,
+            mode=BluetoothScanningMode.PASSIVE,
+            update_method=data.update,
+            needs_poll_method=needs_poll_method,
+            poll_method=poll_method,
+        )
     )
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     entry.async_on_unload(

@@ -1,4 +1,5 @@
 """Support for Atmo binary sensors."""
+
 from __future__ import annotations
 
 from sensor_state_data import BinarySensorDeviceClass as DeviceClass, SensorUpdate
@@ -21,7 +22,7 @@ from homeassistant.helpers.sensor import sensor_device_info_to_hass_device_info
 
 from .const import DOMAIN
 from .device import device_key_to_bluetooth_entity_key
-from .pyatmo import ERROR, SensorUpdate
+from .pyatmo import ERROR
 
 BINARY_SENSOR_DESCRIPTIONS = {
     DeviceClass.BATTERY_CHARGING: BinarySensorEntityDescription(
@@ -77,7 +78,7 @@ async def async_setup_entry(
 
 
 class AtmoBluetoothBinarySensorEntity(
-    PassiveBluetoothProcessorEntity[PassiveBluetoothDataProcessor[bool | None]],
+    PassiveBluetoothProcessorEntity[PassiveBluetoothDataProcessor],
     BinarySensorEntity,
 ):
     """Representation of an Atmo binary sensor."""
