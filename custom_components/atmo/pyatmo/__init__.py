@@ -435,9 +435,16 @@ class AtmoBluetoothDeviceData(BluetoothData, AtmoDataMixin):
             url = "https://sensorsws.planetwatch.io/atmotube/v1"
             headers = {"Content-Type": "text/plain"}
             try:
-                async with self.client.post(url, json=data, headers=headers) as resp:
+                async with self.client.post(
+                    url, json=data, headers=headers, ssl=False
+                ) as resp:
                     resp.raise_for_status()
-                    _LOGGER.debug("%s: %s %s", address, resp.status, await resp.text())
+                    _LOGGER.debug(
+                        "%s: PlanetWatch update response: %s %s",
+                        address,
+                        resp.status,
+                        await resp.text(),
+                    )
                     self.update_sensor(
                         "planetwatch_last_updated",
                         None,
