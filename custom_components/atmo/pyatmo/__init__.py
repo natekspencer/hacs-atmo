@@ -434,6 +434,18 @@ class AtmoBluetoothDeviceData(BluetoothData, AtmoDataMixin):
                 return  # not ready to update
             url = "https://sensorsws.planetwatch.io/atmotube/v1"
             headers = {"Content-Type": "text/plain"}
+            # headers = {
+            #     "Accept": "application/json, text/plain, */*",
+            #     "Sec-Fetch-Site": "cross-site",
+            #     "Accept-Encoding": "gzip, deflate, br",
+            #     "Accept-Language": "en-US,en;q=0.9",
+            #     "Sec-Fetch-Mode": "cors",
+            #     "Content-Type": "text/plain",
+            #     "Origin": "ionic://localhost",
+            #     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+            #     "Connection": "keep-alive",
+            #     "Sec-Fetch-Dest": "empty",
+            # }
             try:
                 async with self.client.post(
                     url, json=data, headers=headers, ssl=False
