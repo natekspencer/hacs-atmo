@@ -6,7 +6,7 @@
   "configurations": [
     {
       "name": "Home Assistant",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "module": "homeassistant",
       "justMyCode": false,
@@ -16,17 +16,19 @@
       // Debug by attaching to remote Home Asistant server using Remote Python Debugger.
       // See https://www.home-assistant.io/integrations/debugpy/
       "name": "Home Assistant: Attach Remote",
-      "type": "python",
+      "type": "debugpy",
       "request": "attach",
-      "port": 5678,
-      "host": "homeassistant.local",
-      "justMyCode": false,
+      "connect": {
+        "host": "homeassistant.local",
+        "port": 5678
+      },
       "pathMappings": [
         {
           "localRoot": "${workspaceFolder}",
           "remoteRoot": "/usr/src/homeassistant"
         }
-      ]
+      ],
+      "justMyCode": false
     }
   ]
 }
