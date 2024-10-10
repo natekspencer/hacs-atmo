@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import asyncio
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
+from decimal import Decimal
 import json
 import logging
 from struct import unpack
@@ -68,11 +69,15 @@ class AtmoDataMixin:
     pm1: float | None = None
     pm25: float | None = None
     pm10: float | None = None
+    pm4: float | None = None
     pressure: int | None = None
     temperature: float | None = None
     timer: bool = False
     voc: int | None = None
     voc_ready: bool = False
+
+    bme280_last_updated: datetime | None = None
+    pm_last_updated: datetime | None = None
 
     planetwatch_sensor: bool | None = False
     planetwatch_checked: datetime | None = None
@@ -173,12 +178,18 @@ class AtmoBluetoothDeviceData(BluetoothData, AtmoDataMixin):
                 name="Volatile organic compounds",
             )
             self.update_predefined_sensor(
-                SensorLibrary.HUMIDITY__PERCENTAGE, self.humidity
+                SensorLibrary.HUMIDITY__PERCENTAGE,
+                self.humidity,
+                last_updated=self.bme280_last_updated,
             )
             self.update_predefined_sensor(
-                SensorLibrary.TEMPERATURE__CELSIUS, self.temperature
+                SensorLibrary.TEMPERATURE__CELSIUS,
+                self.temperature,
+                last_updated=self.bme280_last_updated,
             )
-            self.update_predefined_sensor(PRESSURE__PA, self.pressure)
+            self.update_predefined_sensor(
+                PRESSURE__PA, self.pressure, last_updated=self.bme280_last_updated
+            )
             self.update_predefined_sensor(
                 SensorLibrary.BATTERY__PERCENTAGE, self.battery
             )
@@ -216,16 +227,19 @@ class AtmoBluetoothDeviceData(BluetoothData, AtmoDataMixin):
                 SensorLibrary.PM1__CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
                 pm1,
                 name="PM1",
+                last_updated=self.pm_last_updated,
             )
             self.update_predefined_sensor(
                 SensorLibrary.PM25__CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
                 pm25,
                 name="PM2.5",
+                last_updated=self.pm_last_updated,
             )
             self.update_predefined_sensor(
                 SensorLibrary.PM10__CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
                 pm10,
                 name="PM10",
+                last_updated=self.pm_last_updated,
             )
 
             return
@@ -241,6 +255,7 @@ class AtmoBluetoothDeviceData(BluetoothData, AtmoDataMixin):
 
     def _process_bme280_data(self, data: bytes, address: str) -> None:
         """Parse BME280 characteristic data."""
+        self.bme280_last_updated = datetime.now()
         self.humidity, temperature, self.pressure, temperature_extended = unpack(
             "<bbih", data
         )
@@ -262,6 +277,7 @@ class AtmoBluetoothDeviceData(BluetoothData, AtmoDataMixin):
 
     def _process_pm_data(self, data: bytes, address: str) -> None:
         """Parse PM characteristic data."""
+        self.pm_last_updated = datetime.now()
         pm1, pm25, pm10, pm4 = decode_pms(data, 4, 3)
         _LOGGER.debug(
             "%s: PM data: %s, pm1: %s, pm25: %s, pm10: %s, pm4: %s",
@@ -276,7 +292,7 @@ class AtmoBluetoothDeviceData(BluetoothData, AtmoDataMixin):
         if None in (pm1, pm25, pm10):
             return  # PM sensor is off, so don't update values
 
-        self.pm1, self.pm25, self.pm10 = (pm1, pm25, pm10)
+        self.pm1, self.pm25, self.pm10, self.pm4 = (pm1, pm25, pm10, pm4)
         self.update_predefined_sensor(
             SensorLibrary.PM1__CONCENTRATION_MICROGRAMS_PER_CUBIC_METER, pm1, name="PM1"
         )
@@ -340,6 +356,21 @@ class AtmoBluetoothDeviceData(BluetoothData, AtmoDataMixin):
         aqs = calc_aqs(self.voc / 1000, self.pm1, self.pm25, self.pm10)
         self.update_sensor("air_quality_score", None, aqs, name="Air quality score")
         return aqs
+
+    def update_predefined_sensor(
+        self,
+        base_description: BaseSensorDescription,
+        native_value: None | str | int | float | date | datetime | Decimal,
+        key: str | None = None,
+        name: str | None = None,
+        device_id: str | None = None,
+        last_updated: datetime | None = None,
+    ) -> None:
+        if last_updated and last_updated > (datetime.now() - timedelta(minutes=1)):
+            return
+        return super().update_predefined_sensor(
+            base_description, native_value, key, name, device_id
+        )
 
     async def async_poll(self, ble_device: BLEDevice) -> SensorUpdate:
         """Poll the device to retrieve any values we can't get from passive listening."""
