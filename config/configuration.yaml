@@ -4,6 +4,7 @@ automation:
 bluetooth:
 frontend:
 history:
+isal:
 logbook:
 
 homeassistant:
